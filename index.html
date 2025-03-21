@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application System</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        input[type="submit"],
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group.grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .confirmation {
+            text-align: center;
+            display: none;
+        }
+
+        .confirmation h2 {
+            color: #27ae60;
+        }
+
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard h3 {
+            color: #2c3e50;
+        }
+
+        .job-listing {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .job-listing h4 {
+            margin: 0 0 10px;
+            color: #3498db;
+        }
+
+        .job-listing p {
+            margin: 5px 0;
+        }
+
+        .job-listing button {
+            background-color: #27ae60;
+            margin-top: 10px;
+        }
+
+        .job-listing button:hover {
+            background-color: #219653;
+        }
+
+        .applied-jobs {
+            margin-top: 20px;
+        }
+
+        .applied-jobs h3 {
+            color: #2c3e50;
+        }
+
+        .notification {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+
+        .notification p {
+            margin: 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .form-group.grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="userType">Login As:</label>
+                <select id="userType" name="userType" required>
+                    <option value="">-- Select User Type --</option>
+                    <option value="jobSeeker">Job Seeker</option>
+                    <option value="employer">Employer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <input type="submit" value="Login">
+        </form>
+        <p>Don't have an account? <a href="#" onclick="showRegistration()">Register as Job Seeker</a></p>
+    </div>
+
+    <!-- Job Seeker Registration -->
+    <div id="registrationPage" class="container" style="display: none;">
+        <h2>Job Seeker Registration</h2>
+        <form id="registrationForm">
+            <div class="form-group grid">
+                <div>
+                    <label for="fullName">Full Name:</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="resume">Upload Resume:</label>
+                <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+            </div>
+            <input type="submit" value="Register">
+        </form>
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
+
+    <!-- Job Seeker Dashboard -->
+    <div id="jobSeekerDashboard" class="container dashboard">
+        <h2>Job Seeker Dashboard</h2>
+        <h3>Available Jobs</h3>
+        <div id="jobListings">
+            <!-- Job listings will be populated dynamically -->
+        </div>
+        <div class="applied-jobs">
+            <h3>Applied Jobs</h3>
+            <div id="appliedJobsList">
+                <!-- Applied jobs will be populated dynamically -->
+            </div>
+        </div>
+        <div id="notifications">
+            <!-- Notifications will be populated dynamically -->
+        </div>
+    </div>
+
+    <!-- Job Application Form -->
+    <div id="jobApplicationFormPage" class="container" style="display: none;">
+        <h2>Job Application Form</h2>
+        <form id="jobApplicationForm">
+            <div class="form-group grid">
+                <div>
+                    <label for="applicantName">Full Name:</label>
+                    <input type="text" id="applicantName" name="applicantName" required>
+                </div>
+                <div>
+                    <label for="applicantAge">Age:</label>
+                    <input type="number" id="applicantAge" name="applicantAge" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="applicantGender">Gender:</label>
+                <select id="applicantGender" name="applicantGender" required>
+                    <option value="">-- Select Gender --</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="applicantResume">Upload Resume:</label>
+                <input type="file" id="applicantResume" name="applicantResume" accept=".pdf,.doc,.docx" required>
+            </div>
+            <div class="form-group">
+                <label for="coverLetter">Cover Letter:</label>
+                <textarea id="coverLetter" name="coverLetter" rows="5" required></textarea>
+            </div>
+            <input type="submit" value="Submit Application">
+        </form>
+    </div>
+
+    <!-- Employer Dashboard -->
+    <div id="employerDashboard" class="container dashboard">
+        <h2>Employer Dashboard</h2>
+        <h3>Post a Job</h3>
+        <form id="postJobForm">
+            <div class="form-group">
+                <label for="jobTitle">Job Title:</label>
+                <input type="text" id="jobTitle" name="jobTitle" required>
+            </div>
+            <div class="form-group">
+                <label for="jobDescription">Job Description:</label>
+                <textarea id="jobDescription" name="jobDescription" rows="5" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="jobSalary">Salary:</label>
+                <input type="text" id="jobSalary" name="jobSalary" required>
+            </div>
+            <input type="submit" value="Post Job">
+        </form>
+        <h3>Posted Jobs</h3>
+        <div id="postedJobs">
+            <!-- Posted jobs will be populated dynamically -->
+        </div>
+    </div>
+
+    <script>
+        // Dummy data for job listings
+        let jobListings = [];
+
+        // Dummy data for posted jobs
+        let postedJobs = [];
+
+        // Dummy data for applied jobs
+        let appliedJobs = [];
+
+        // Dummy data for notifications
+        let notifications = [];
+
+        // Show Registration Page
+        function showRegistration() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('registrationPage').style.display = 'block';
+        }
+
+        // Show Login Page
+        function showLogin() {
+            document.getElementById('registrationPage').style.display = 'none';
+            document.getElementById('loginPage').style.display = 'block';
+        }
+
+        // Login Logic
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const userType = document.getElementById('userType').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Dummy login check
+            if (username === "user" && password === "password") {
+                document.getElementById('loginPage').style.display = 'none';
+                if (userType === 'jobSeeker') {
+                    document.getElementById('jobSeekerDashboard').style.display = 'block';
+                    loadJobListings();
+                    loadAppliedJobs();
+                    loadNotifications();
+                } else if (userType === 'employer') {
+                    document.getElementById('employerDashboard').style.display = 'block';
+                    loadPostedJobs();
+                }
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        // Job Seeker Registration Logic
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert('Registration successful! Please login.');
+            showLogin();
+        });
+
+        // Load Job Listings
+        function loadJobListings() {
+            const jobListingsDiv = document.getElementById('jobListings');
+            jobListingsDiv.innerHTML = '';
+            jobListings.forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'job-listing';
+                jobDiv.innerHTML = `
+                    <h4>${job.title}</h4>
+                    <p>${job.description}</p>
+                    <p><strong>Salary:</strong> ${job.salary}</p>
+                    <button onclick="showApplicationForm(${job.id})">Apply Now</button>
+                `;
+                jobListingsDiv.appendChild(jobDiv);
+            });
+        }
+
+        // Show Application Form
+        function showApplicationForm(jobId) {
+            document.getElementById('jobSeekerDashboard').style.display = 'none';
+            document.getElementById('jobApplicationFormPage').style.display = 'block';
+            document.getElementById('jobApplicationForm').dataset.jobId = jobId;
+        }
+
+        // Submit Application Form
+        document.getElementById('jobApplicationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const jobId = this.dataset.jobId;
+            const job = jobListings.find(job => job.id === parseInt(jobId));
+            const applicantName = document.getElementById('applicantName').value;
+            const applicantAge = document.getElementById('applicantAge').value;
+            const applicantGender = document.getElementById('applicantGender').value;
+            const applicantResume = document.getElementById('applicantResume').files[0];
+            const coverLetter = document.getElementById('coverLetter').value;
+
+            // Save application
+            appliedJobs.push({
+                jobId,
+                jobTitle: job.title,
+                applicantName,
+                applicantAge,
+                applicantGender,
+                applicantResume: applicantResume.name,
+                coverLetter,
+                status: 'Applied'
+            });
+
+            // Show confirmation
+            alert(`Application submitted for ${job.title}`);
+            document.getElementById('jobApplicationFormPage').style.display = 'none';
+            document.getElementById('jobSeekerDashboard').style.display = 'block';
+            loadAppliedJobs();
+        });
+
+        // Load Applied Jobs
+        function loadAppliedJobs() {
+            const appliedJobsDiv = document.getElementById('appliedJobsList');
+            appliedJobsDiv.innerHTML = '';
+            appliedJobs.forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'job-listing';
+                jobDiv.innerHTML = `
+                    <h4>${job.jobTitle}</h4>
+                    <p><strong>Applicant:</strong> ${job.applicantName}</p>
+                    <p><strong>Age:</strong> ${job.applicantAge}</p>
+                    <p><strong>Gender:</strong> ${job.applicantGender}</p>
+                    <p><strong>Resume:</strong> ${job.applicantResume}</p>
+                    <p><strong>Status:</strong> ${job.status}</p>
+                `;
+                appliedJobsDiv.appendChild(jobDiv);
+            });
+        }
+
+        // Post Job Logic
+        document.getElementById('postJobForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const jobTitle = document.getElementById('jobTitle').value;
+            const jobDescription = document.getElementById('jobDescription').value;
+            const jobSalary = document.getElementById('jobSalary').value;
+
+            const newJob = {
+                id: jobListings.length + 1,
+                title: jobTitle,
+                description: jobDescription,
+                salary: jobSalary
+            };
+
+            jobListings.push(newJob);
+            postedJobs.push(newJob);
+            loadJobListings();
+            loadPostedJobs();
+            alert('Job posted successfully!');
+        });
+
+        // Load Posted Jobs
+        function loadPostedJobs() {
+            const postedJobsDiv = document.getElementById('postedJobs');
+            postedJobsDiv.innerHTML = '';
+            postedJobs.forEach(job => {
+                const jobDiv = document.createElement('div');
+                jobDiv.className = 'job-listing';
+                jobDiv.innerHTML = `
+                    <h4>${job.title}</h4>
+                    <p>${job.description}</p>
+                    <p><strong>Salary:</strong> ${job.salary}</p>
+                `;
+                postedJobsDiv.appendChild(jobDiv);
+            });
+        }
+    </script>
+
+</body>
+</html>
